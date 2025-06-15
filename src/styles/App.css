@@ -24,7 +24,7 @@ body {
 
 .app.dark {
   background-color: #333;
-  color: #f5f5f5;
+  color: #333;
 }
 
 .app.blue {
@@ -354,4 +354,76 @@ nav button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+.task-title-container {
+  flex: 1;
+}
+
+.task-title-button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.task-list-container {
+  list-style: none;
+  padding: 0;
+}
+
+.task-item-wrapper {
+  margin-bottom: 10px;
+}
+
+.drag-handle {
+  cursor: grab;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+.drag-handle:hover {
+  opacity: 1;
+}
+
+.task-item.dragging {
+  opacity: 0.5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #f8f8f8;
+}
+
+.task-item-wrapper.dragging {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.checkbox-container {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
 }

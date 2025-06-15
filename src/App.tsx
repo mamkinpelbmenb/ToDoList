@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import ThemeSelector from './components/ThemeSelector';
@@ -14,8 +14,9 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tasks' | 'collaboration' | 'profile'>('tasks');
   const [collaborators, setCollaborators] = useState<string[]>([]);
   const [isAuthFormVisible, setIsAuthFormVisible] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme || 'light';
     const savedUser = JSON.parse(localStorage.getItem('currentUser') || 'null') as User | null;
     const savedCollaborators = JSON.parse(localStorage.getItem('collaborators') || '[]') as string[];
@@ -27,9 +28,11 @@ const App: React.FC = () => {
       setCurrentUser(savedUser);
       setIsAuthFormVisible(false);
     }
+    
+    setIsLoading(false);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     localStorage.setItem('theme', theme);
     localStorage.setItem('collaborators', JSON.stringify(collaborators));
     
@@ -61,7 +64,7 @@ const App: React.FC = () => {
     password: string; 
     fullName?: string; 
     email?: string; 
-    phone?: string 
+    phone?: string
   }) => {
     const users = JSON.parse(localStorage.getItem('users') || '[]') as User[];
     
@@ -92,7 +95,7 @@ const App: React.FC = () => {
   const handleProfileUpdate = (updates: { 
     fullName?: string; 
     email?: string; 
-    phone?: string 
+    phone?: string
   }) => {
     if (!currentUser) return;
     
@@ -110,6 +113,7 @@ const App: React.FC = () => {
     localStorage.setItem('users', JSON.stringify(updatedUsers));
   };
 
+  // Добавление задачи
   const addTask = (task: Omit<Task, 'id' | 'completed' | 'subtasks' | 'comments'>) => {
     if (!currentUser) return;
     
@@ -129,6 +133,7 @@ const App: React.FC = () => {
     setCurrentUser(updatedUser);
   };
 
+  // Переключение статуса задачи
   const toggleTask = (taskId: string) => {
     if (!currentUser) return;
     
@@ -140,6 +145,7 @@ const App: React.FC = () => {
     });
   };
 
+  // Удаление задачи
   const deleteTask = (taskId: string) => {
     if (!currentUser) return;
     
@@ -149,6 +155,7 @@ const App: React.FC = () => {
     });
   };
 
+  // Добавление подзадачи
   const addSubtask = (taskId: string, subtask: Omit<Subtask, 'id' | 'completed'>) => {
     if (!currentUser) return;
     
@@ -168,6 +175,7 @@ const App: React.FC = () => {
     });
   };
 
+  // Переключение статуса подзадачи
   const toggleSubtask = (taskId: string, subtaskId: string) => {
     if (!currentUser) return;
     
@@ -188,6 +196,7 @@ const App: React.FC = () => {
     });
   };
 
+  // Добавление комментария
   const addComment = (taskId: string, comment: Omit<Comment, 'id' | 'date'>) => {
     if (!currentUser) return;
     
@@ -207,15 +216,20 @@ const App: React.FC = () => {
     });
   };
 
+  // Добавление коллаборатора
   const addCollaborator = (email: string) => {
     if (!collaborators.includes(email)) {
       setCollaborators(prev => [...prev, email]);
     }
   };
 
+  if (isLoading) {
+    return <div className="loadingContainer">Loading...</div>; // Исправлено
+  }
+
   if (!currentUser || isAuthFormVisible) {
     return (
-      <div className={`app ${theme} auth-container`}>
+      <div className="app authContainer"> {/* Исправлено */}
         <header>
           <h1>Advanced To-Do List</h1>
           <ThemeSelector theme={theme} setTheme={setTheme} />
@@ -226,6 +240,23 @@ const App: React.FC = () => {
       </div>
     );
   }
+
+  const reorderTasks = (startIndex: number, endIndex: number) => {
+  if (!currentUser) return;
+  
+    setCurrentUser(prevUser => {
+      if (!prevUser) return prevUser;
+      
+      const newTasks = Array.from(prevUser.tasks);
+      const [removed] = newTasks.splice(startIndex, 1);
+      newTasks.splice(endIndex, 0, removed);
+      
+      return {
+        ...prevUser,
+        tasks: newTasks
+      };
+    });
+  };
 
   return (
     <div className={`app ${theme}`}>
@@ -265,6 +296,7 @@ const App: React.FC = () => {
               addSubtask={addSubtask} 
               toggleSubtask={toggleSubtask}
               addComment={addComment}
+              reorderTasks={reorderTasks}
             />
           </>
         ) : activeTab === 'collaboration' ? (
@@ -289,5 +321,6 @@ const App: React.FC = () => {
     </div>
   );
 };
+
 
 export default App;

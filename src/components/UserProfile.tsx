@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // Добавлен импорт useState
 
 interface UserProfileProps {
   user: {
@@ -34,7 +34,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="profile-username">Ник</label>
+            <label htmlFor="profile-username">Username</label>
             <input 
               id="profile-username"
               type="text" 
@@ -45,7 +45,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
           </div>
           
           <div className="form-group">
-            <label htmlFor="profile-fullname">ФИО</label>
+            <label htmlFor="profile-fullname">Full Name</label>
             <input
               id="profile-fullname"
               type="text"
@@ -69,13 +69,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
           </div>
           
           <div className="form-group">
-            <label htmlFor="profile-phone">Телефон</label>
+            <label htmlFor="profile-phone">Phone</label>
             <input
               id="profile-phone"
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Enter your phone number"
+              pattern="[0-9]{10}"
+              title="10-digit phone number"
               aria-label="Phone Number"
             />
           </div>
@@ -86,7 +88,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
               className="save-btn"
               aria-label="Save profile changes"
             >
-              Сохранить
+              Save
             </button>
             <button 
               type="button" 
@@ -94,16 +96,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
               onClick={() => setIsEditing(false)}
               aria-label="Cancel editing"
             >
-              Отмена
+              Cancel
             </button>
           </div>
         </form>
       ) : (
         <div className="profile-info">
-          <p><strong>Ник:</strong> {user.username}</p>
-          {fullName && <p><strong>ФИО:</strong> {fullName}</p>}
+          <p><strong>Username:</strong> {user.username}</p>
+          {fullName && <p><strong>Full Name:</strong> {fullName}</p>}
           {email && <p><strong>Email:</strong> {email}</p>}
-          {phone && <p><strong>Телефон:</strong> {phone}</p>}
+          {phone && <p><strong>Phone:</strong> {phone}</p>}
           
           <div className="profile-actions">
             <button 
@@ -111,14 +113,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
               onClick={() => setIsEditing(true)}
               aria-label="Edit profile"
             >
-              Настройки
+              Edit Profile
             </button>
             <button 
               className="logout-btn"
               onClick={onLogout}
               aria-label="Logout"
             >
-              Выйти
+              Logout
             </button>
           </div>
         </div>

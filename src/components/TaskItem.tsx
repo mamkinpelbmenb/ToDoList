@@ -1,50 +1,35 @@
-// @ts-check
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import SubtaskForm from './SubtaskForm';
 import CommentForm from './CommentForm';
+import { Task, Subtask, Comment, Priority, Recurrence } from '../types/global';
 
-/**
- * @typedef {import('../types/global').Task} Task
- * @typedef {import('../types/global').Subtask} Subtask
- * @typedef {import('../types/global').Comment} Comment
- */
+interface TaskItemProps {
+  task: Task;
+  toggleTask: (id: string) => void;
+  deleteTask: (id: string) => void;
+  addSubtask: (taskId: string, subtask: Omit<Subtask, 'id' | 'completed'>) => void;
+  toggleSubtask: (taskId: string, subtaskId: string) => void;
+  addComment: (taskId: string, comment: Omit<Comment, 'id' | 'date'>) => void;
+}
 
-/**
- * @param {{
- *   task: Task,
- *   toggleTask: (id: string) => void,
- *   deleteTask: (id: string) => void,
- *   addSubtask: (taskId: string, subtask: Omit<Subtask, 'id' | 'completed'>) => void,
- *   toggleSubtask: (taskId: string, subtaskId: string) => void,
- *   addComment: (taskId: string, comment: Omit<Comment, 'id' | 'date'>) => void
- * }} props
- * @returns {React.JSX.Element}
- */
-export default function TaskItem({ 
+const TaskItem: React.FC<TaskItemProps> = ({ 
   task, 
   toggleTask, 
   deleteTask, 
   addSubtask, 
   toggleSubtask,
   addComment
-}) {
+}) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showSubtaskForm, setShowSubtaskForm] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);
 
-  /**
-   * @param {Omit<Subtask, 'id' | 'completed'>} subtask
-   */
-  const handleAddSubtask = (subtask) => {
+  const handleAddSubtask = (subtask: Omit<Subtask, 'id' | 'completed'>) => {
     addSubtask(task.id, subtask);
     setShowSubtaskForm(false);
   };
 
-  /**
-   * @param {Omit<Comment, 'id' | 'date'>} comment
-   */
-  const handleAddComment = (comment) => {
+  const handleAddComment = (comment: Omit<Comment, 'id' | 'date'>) => {
     addComment(task.id, comment);
     setShowCommentForm(false);
   };
@@ -52,11 +37,17 @@ export default function TaskItem({
   return (
     <li className={`task-item ${task.priority} ${task.completed ? 'completed' : ''}`}>
       <div className="task-header">
-        <input 
-          type="checkbox" 
-          checked={task.completed} 
-          onChange={() => toggleTask(task.id)} 
-        />
+        <div className="checkbox-container">
+          <input 
+            id={`task-${task.id}`}
+            type="checkbox" 
+            checked={task.completed} 
+            onChange={() => toggleTask(task.id)} 
+          />
+          <label htmlFor={`task-${task.id}`} className="visually-hidden">
+            Toggle task completion
+          </label>
+        </div>
         
         <div className="task-title" onClick={() => setShowDetails(!showDetails)}>
           <h3>{task.title}</h3>
@@ -108,11 +99,17 @@ export default function TaskItem({
           <ul>
             {task.subtasks.map(subtask => (
               <li key={subtask.id} className="subtask">
-                <input 
-                  type="checkbox" 
-                  checked={subtask.completed} 
-                  onChange={() => toggleSubtask(task.id, subtask.id)} 
-                />
+                <div className="checkbox-container">
+                  <input 
+                    id={`subtask-${subtask.id}`}
+                    type="checkbox" 
+                    checked={subtask.completed} 
+                    onChange={() => toggleSubtask(task.id, subtask.id)} 
+                  />
+                  <label htmlFor={`subtask-${subtask.id}`} className="visually-hidden">
+                    Toggle subtask completion
+                  </label>
+                </div>
                 <span>{subtask.title}</span>
               </li>
             ))}
@@ -139,37 +136,6 @@ export default function TaskItem({
       )}
     </li>
   );
-}
-
-TaskItem.propTypes = {
-  task: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string,
-    dueDate: PropTypes.string,
-    priority: PropTypes.oneOf(['high', 'medium', 'low']).isRequired,
-    reminder: PropTypes.string,
-    recurrence: PropTypes.oneOf(['none', 'daily', 'weekly', 'monthly']),
-    completed: PropTypes.bool.isRequired,
-    subtasks: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        completed: PropTypes.bool.isRequired
-      })
-    ),
-    comments: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        text: PropTypes.string.isRequired,
-        author: PropTypes.string.isRequired,
-        date: PropTypes.instanceOf(Date).isRequired
-      })
-    )
-  }).isRequired,
-  toggleTask: PropTypes.func.isRequired,
-  deleteTask: PropTypes.func.isRequired,
-  addSubtask: PropTypes.func.isRequired,
-  toggleSubtask: PropTypes.func.isRequired,
-  addComment: PropTypes.func.isRequired
 };
+
+export default TaskItem;
