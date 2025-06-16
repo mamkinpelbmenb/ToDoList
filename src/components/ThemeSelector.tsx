@@ -35,7 +35,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ theme, setTheme }) => {
     <div className="theme-selector">
       {/* Скрытая метка для скринридеров */}
       <label htmlFor="theme-select" className="visually-hidden">
-        Select application theme
+        Выберите тему
       </label>
       
       <select 

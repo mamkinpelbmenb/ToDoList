@@ -19,14 +19,14 @@ export const RegistrationFormFields: React.FC<RegistrationFormFieldsProps> = ({
 }) => (
   <>
     <div className="form-group">
-      <label htmlFor="auth-fullname">Full Name</label>
+      <label htmlFor="auth-fullname">ФИО</label>
       <input
         id="auth-fullname"
         type="text"
         value={fullName}
         onChange={(e) => setFullName(e.target.value)}
-        placeholder="Enter your full name"
-        aria-label="Full Name"
+        placeholder="Введите ФИО"
+        aria-label="ФИО"
       />
     </div>
     

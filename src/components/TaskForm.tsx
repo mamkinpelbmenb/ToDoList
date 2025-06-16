@@ -63,7 +63,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
   return (
     <form onSubmit={handleSubmit} className="task-form">
       <div className="form-group">
-        <label htmlFor="task-title">Title*</label>
+        <label htmlFor="task-title">Название*</label>
         <input
           id="task-title"
           type="text"
@@ -78,7 +78,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
       </div>
       
       <div className="form-group">
-        <label htmlFor="task-description">Description</label>
+        <label htmlFor="task-description">Описание</label>
         <textarea
           id="task-description"
           name="description"
@@ -91,7 +91,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
       
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="task-due-date">Due Date</label>
+          <label htmlFor="task-due-date">Срок погашения</label>
           <input
             id="task-due-date"
             type="datetime-local"
@@ -104,7 +104,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="task-priority">Priority</label>
+          <label htmlFor="task-priority">Приоритет</label>
           <select
             id="task-priority"
             name="priority"
@@ -112,16 +112,16 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
             onChange={handleChange}
             aria-label="Task priority"
           >
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="high">Высокая</option>
+            <option value="medium">Средняя</option>
+            <option value="low">Низкая</option>
           </select>
         </div>
       </div>
       
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="task-reminder">Reminder</label>
+          <label htmlFor="task-reminder">Напоминание</label>
           <input
             id="task-reminder"
             type="datetime-local"
@@ -134,7 +134,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="task-recurrence">Recurrence</label>
+          <label htmlFor="task-recurrence">Повторение</label>
           <select
             id="task-recurrence"
             name="recurrence"
@@ -142,15 +142,15 @@ const TaskForm: React.FC<TaskFormProps> = ({ addTask }) => {
             onChange={handleChange}
             aria-label="Task recurrence"
           >
-            <option value="none">None</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
+            <option value="none">нет</option>
+            <option value="daily">Ежедневный</option>
+            <option value="weekly">Еженедельно</option>
+            <option value="monthly">Ежемесячно</option>
           </select>
         </div>
       </div>
       
-      <button type="submit" className="add-task-btn">Add Task</button>
+      <button type="submit" className="add-task-btn">Добавить задачу</button>
     </form>
   );
 };

@@ -13,8 +13,8 @@ const CommentForm: React.FC<CommentFormProps> = ({ addComment }) => {
     e.preventDefault();
     
     const newErrors: {text?: string; author?: string} = {};
-    if (!text.trim()) newErrors.text = 'Comment text is required';
-    if (!author.trim()) newErrors.author = 'Author name is required';
+    if (!text.trim()) newErrors.text = 'Требуется текст комментария';
+    if (!author.trim()) newErrors.author = 'Требуется имя автора';
     
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
@@ -30,20 +30,20 @@ const CommentForm: React.FC<CommentFormProps> = ({ addComment }) => {
         type="text"
         value={author}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAuthor(e.target.value)}
-        placeholder="Your name"
-        aria-label="Comment author"
+        placeholder="Ваше имя"
+        aria-label="Коммент автора"
       />
       {errors.author && <div className="error">{errors.author}</div>}
       
       <textarea
         value={text}
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
-        placeholder="Your comment"
-        aria-label="Comment text"
+        placeholder="Ваш коммент"
+        aria-label="Текст комента"
       />
       {errors.text && <div className="error">{errors.text}</div>}
       
-      <button type="submit">Add Comment</button>
+      <button type="submit">Добавить коммент</button>
     </form>
   );
 };

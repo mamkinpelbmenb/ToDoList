@@ -15,7 +15,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
 }) => (
   <>
     <div className="form-group">
-      <label htmlFor="auth-username">Username*</label>
+      <label htmlFor="auth-username">Логин*</label>
       <input
         id="auth-username"
         type="text"
@@ -28,7 +28,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
     </div>
     
     <div className="form-group">
-      <label htmlFor="auth-password">Password*</label>
+      <label htmlFor="auth-password">Пароль*</label>
       <input
         id="auth-password"
         type="password"

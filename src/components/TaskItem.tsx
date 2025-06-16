@@ -45,7 +45,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
             onChange={() => toggleTask(task.id)} 
           />
           <label htmlFor={`task-${task.id}`} className="visually-hidden">
-            Toggle task completion
+            Переключить задачи на
           </label>
         </div>
         
@@ -53,20 +53,20 @@ const TaskItem: React.FC<TaskItemProps> = ({
           <h3>{task.title}</h3>
           {task.dueDate && (
             <span className="due-date">
-              Due: {new Date(task.dueDate).toLocaleString()}
+              Соответствующий: {new Date(task.dueDate).toLocaleString()}
             </span>
           )}
         </div>
         
         <div className="task-actions">
           <button onClick={() => setShowSubtaskForm(!showSubtaskForm)}>
-            Add Subtask
+            Добавить подзадачу
           </button>
           <button onClick={() => setShowCommentForm(!showCommentForm)}>
-            Add Comment
+            Добавить коментарий
           </button>
           <button onClick={() => deleteTask(task.id)} className="delete-btn">
-            Delete
+            Удалить
           </button>
         </div>
       </div>
@@ -77,13 +77,13 @@ const TaskItem: React.FC<TaskItemProps> = ({
           
           {task.reminder && (
             <p className="reminder">
-              Reminder set for: {new Date(task.reminder).toLocaleString()}
+              Установить напоминание: {new Date(task.reminder).toLocaleString()}
             </p>
           )}
           
           {task.recurrence !== 'none' && (
             <p className="recurrence">
-              Repeats: {task.recurrence}
+              Повторяется: {task.recurrence}
             </p>
           )}
         </div>
@@ -95,7 +95,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
       
       {task.subtasks.length > 0 && (
         <div className="subtasks">
-          <h4>Subtasks:</h4>
+          <h4>Подзадачи:</h4>
           <ul>
             {task.subtasks.map(subtask => (
               <li key={subtask.id} className="subtask">
@@ -107,7 +107,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
                     onChange={() => toggleSubtask(task.id, subtask.id)} 
                   />
                   <label htmlFor={`subtask-${subtask.id}`} className="visually-hidden">
-                    Toggle subtask completion
+                    Переключение на выполнение подзадачи
                   </label>
                 </div>
                 <span>{subtask.title}</span>
@@ -123,7 +123,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
       
       {task.comments.length > 0 && (
         <div className="comments">
-          <h4>Comments:</h4>
+          <h4>Коментарии:</h4>
           {task.comments.map(comment => (
             <div key={comment.id} className="comment">
               <p className="comment-text">{comment.text}</p>

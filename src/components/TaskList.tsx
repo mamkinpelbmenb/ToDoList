@@ -90,35 +90,35 @@ const TaskList: React.FC<TaskListProps> = ({
     <div className="task-list">
       <div className="task-controls">
         <div className="filter-controls">
-          <label htmlFor="filter-select">Filter:</label>
+          <label htmlFor="filter-select">Фильтр:</label>
           <select 
             id="filter-select"
             value={filter} 
             onChange={(e) => setFilter(e.target.value)}
             aria-label="Filter tasks"
           >
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
+            <option value="all">Все</option>
+            <option value="active">Активные</option>
+            <option value="completed">Завершенные</option>
           </select>
         </div>
         
         <div className="sort-controls">
-          <label htmlFor="sort-select">Sort by:</label>
+          <label htmlFor="sort-select">Сортировать:</label>
           <select 
             id="sort-select"
             value={sortBy} 
             onChange={(e) => setSortBy(e.target.value)}
             aria-label="Sort tasks by"
           >
-            <option value="dueDate">Due Date</option>
-            <option value="priority">Priority</option>
+            <option value="dueDate">срок погашения</option>
+            <option value="priority">Приоритетные</option>
           </select>
         </div>
       </div>
       
       {sortedTasks.length === 0 ? (
-        <p className="no-tasks">No tasks found. Add a new task!</p>
+        <p className="no-tasks">Задачи не найдены. Добавьте новое задачи!</p>
       ) : (
         <ul className="task-list-container">
           {sortedTasks.map((task, index) => (

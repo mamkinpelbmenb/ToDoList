@@ -63,51 +63,71 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister }) => {
 
   return (
     <div className="auth-form">
-      <h2>{isLogin ? 'Login' : 'Register'}</h2>
-      <form onSubmit={handleSubmit} noValidate>
-        <AuthFormFields 
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
+      <h2>{isLogin ? 'Вход' : 'Регистрация'}</h2> {/* Более короткий текст */}
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Логин*"
+            required
+          />
+        </div>
         
-        {errors.username && <div className="error">{errors.username}</div>}
-        {errors.password && <div className="error">{errors.password}</div>}
+        <div className="form-group">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Пароль*"
+            required
+          />
+        </div>
         
         {!isLogin && (
           <>
-            <RegistrationFormFields 
-              fullName={fullName}
-              setFullName={setFullName}
-              email={email}
-              setEmail={setEmail}
-              phone={phone}
-              setPhone={setPhone}
-            />
+            <div className="form-group">
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="ФИО"
+              />
+            </div>
             
-            {errors.email && <div className="error">{errors.email}</div>}
-            {errors.phone && <div className="error">{errors.phone}</div>}
+            <div className="form-group">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Почта"
+              />
+            </div>
+            
+            <div className="form-group">
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Номер"
+              />
+            </div>
           </>
         )}
         
-        <button 
-          type="submit" 
-          className="auth-btn"
-          aria-label={isLogin ? "Login to your account" : "Register new account"}
-        >
-          {isLogin ? 'Login' : 'Register'}
+        <button type="submit" className="auth-btn">
+          {isLogin ? 'Войти' : 'Зарегистрироваться'} {/* Более короткий текст */}
         </button>
         
         <button 
           type="button" 
           className="toggle-btn"
           onClick={() => setIsLogin(!isLogin)}
-          aria-label={isLogin ? "Switch to registration form" : "Switch to login form"}
         >
           {isLogin 
-            ? 'Need an account? Register' 
-            : 'Already have an account? Login'}
+            ? 'Нет аккаунта? Регистрация' 
+            : 'Уже есть аккаунт? Войти'} {/* Более короткий текст */}
         </button>
       </form>
     </div>

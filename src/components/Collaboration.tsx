@@ -68,17 +68,17 @@ const Collaboration: React.FC<CollaborationProps> = ({
   return (
     <div className="collaboration">
       <section className="collaborators-section">
-        <h2>Collaborators</h2>
+        <h2>Участники</h2>
         <form onSubmit={handleAddCollaborator}>
           <input
             type="email"
             value={email}
             onChange={handleEmailChange}
-            placeholder="Add collaborator by email"
+            placeholder="Добавь участника(почта)"
             aria-label="Collaborator email address"
             required
           />
-          <button type="submit">Add</button>
+          <button type="submit">Добавить</button>
           {error && <div className="error">{error}</div>}
         </form>
         
@@ -89,14 +89,14 @@ const Collaboration: React.FC<CollaborationProps> = ({
             ))}
           </ul>
         ) : (
-          <p className="no-collaborators">No collaborators added yet</p>
+          <p className="no-collaborators">Пока не добавлено ни одного автора</p>
         )}
       </section>
       
       <section className="share-task-section">
-        <h2>Share Task</h2>
+        <h2>Поделиться задачей</h2>
         <form onSubmit={handleShareTask}>
-          <label htmlFor="task-select" className="sr-only">Select task to share</label>
+          <label htmlFor="task-select" className="sr-only">Выбери задачу</label>
           <select 
             id="task-select"
             value={sharedTaskId || ''}
@@ -104,7 +104,7 @@ const Collaboration: React.FC<CollaborationProps> = ({
             aria-label="Select a task to share"
             required
           >
-            <option value="">Select a task to share</option>
+            <option value="">Выбери задачу</option>
             {tasks.map((task) => (
               <option key={task.id} value={task.id}>
                 {task.title}
@@ -112,17 +112,17 @@ const Collaboration: React.FC<CollaborationProps> = ({
             ))}
           </select>
           
-          <label htmlFor="share-message" className="sr-only">Add a message</label>
+          <label htmlFor="share-message" className="sr-only">Добавить сообщение</label>
           <textarea 
             id="share-message"
             value={message} 
             onChange={handleMessageChange} 
-            placeholder="Add a message"
+            placeholder="Добавь сообщение"
             aria-label="Share message"
             required
           />
           
-          <button type="submit">Share Task</button>
+          <button type="submit">Поделиться</button>
         </form>
       </section>
     </div>

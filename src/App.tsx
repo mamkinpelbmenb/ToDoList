@@ -13,9 +13,9 @@ const App: React.FC = () => {
   const [theme, setTheme] = useState<Theme>('light');
   const [activeTab, setActiveTab] = useState<'tasks' | 'collaboration' | 'profile'>('tasks');
   const [collaborators, setCollaborators] = useState<string[]>([]);
-  const [isAuthFormVisible, setIsAuthFormVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Загрузка данных из localStorage при запуске
   useLayoutEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme || 'light';
     const savedUser = JSON.parse(localStorage.getItem('currentUser') || 'null') as User | null;
@@ -26,13 +26,13 @@ const App: React.FC = () => {
     
     if (savedUser) {
       setCurrentUser(savedUser);
-      setIsAuthFormVisible(false);
     }
     
     setIsLoading(false);
   }, []);
 
-  useLayoutEffect(() => {
+  // Сохранение данных в localStorage при изменениях
+  useEffect(() => {
     localStorage.setItem('theme', theme);
     localStorage.setItem('collaborators', JSON.stringify(collaborators));
     
@@ -42,6 +42,7 @@ const App: React.FC = () => {
     }
   }, [theme, collaborators, currentUser]);
 
+  // Обработчик входа
   const handleLogin = (credentials: { username: string; password: string }) => {
     const users = JSON.parse(localStorage.getItem('users') || '[]') as User[];
     const user = users.find(
@@ -49,22 +50,23 @@ const App: React.FC = () => {
     );
     
     if (user) {
+      // Загрузка задач пользователя
       const savedTasks = JSON.parse(localStorage.getItem(`tasks_${user.id}`) || '[]') as Task[];
       const userWithTasks = { ...user, tasks: savedTasks };
       
       setCurrentUser(userWithTasks);
-      setIsAuthFormVisible(false);
     } else {
       alert('Invalid username or password');
     }
   };
 
+  // Обработчик регистрации
   const handleRegister = (userData: { 
     username: string; 
     password: string; 
     fullName?: string; 
     email?: string; 
-    phone?: string
+    phone?: string 
   }) => {
     const users = JSON.parse(localStorage.getItem('users') || '[]') as User[];
     
@@ -83,19 +85,19 @@ const App: React.FC = () => {
     localStorage.setItem('users', JSON.stringify(users));
     
     setCurrentUser(newUser);
-    setIsAuthFormVisible(false);
   };
 
+  // Обработчик выхода
   const handleLogout = () => {
     setCurrentUser(null);
-    setIsAuthFormVisible(true);
     localStorage.removeItem('currentUser');
   };
 
+  // Обновление профиля пользователя
   const handleProfileUpdate = (updates: { 
     fullName?: string; 
     email?: string; 
-    phone?: string
+    phone?: string 
   }) => {
     if (!currentUser) return;
     
@@ -106,6 +108,7 @@ const App: React.FC = () => {
     
     setCurrentUser(updatedUser);
     
+    // Обновление в общем списке пользователей
     const users = JSON.parse(localStorage.getItem('users') || '[]') as User[];
     const updatedUsers = users.map(u => 
       u.id === currentUser.id ? updatedUser : u
@@ -216,34 +219,10 @@ const App: React.FC = () => {
     });
   };
 
-  // Добавление коллаборатора
-  const addCollaborator = (email: string) => {
-    if (!collaborators.includes(email)) {
-      setCollaborators(prev => [...prev, email]);
-    }
-  };
-
-  if (isLoading) {
-    return <div className="loadingContainer">Loading...</div>; // Исправлено
-  }
-
-  if (!currentUser || isAuthFormVisible) {
-    return (
-      <div className="app authContainer"> {/* Исправлено */}
-        <header>
-          <h1>Advanced To-Do List</h1>
-          <ThemeSelector theme={theme} setTheme={setTheme} />
-        </header>
-        <main>
-          <AuthForm onLogin={handleLogin} onRegister={handleRegister} />
-        </main>
-      </div>
-    );
-  }
-
+  // Изменение порядка задач
   const reorderTasks = (startIndex: number, endIndex: number) => {
-  if (!currentUser) return;
-  
+    if (!currentUser) return;
+    
     setCurrentUser(prevUser => {
       if (!prevUser) return prevUser;
       
@@ -258,7 +237,34 @@ const App: React.FC = () => {
     });
   };
 
-  return (
+  // Добавление коллаборатора
+  const addCollaborator = (email: string) => {
+    if (!collaborators.includes(email)) {
+      setCollaborators(prev => [...prev, email]);
+    }
+  };
+
+   if (isLoading) {
+    return <div className="loading-container">Загрузка...</div>;
+  }
+
+  if (!currentUser) {
+    return (
+      <div className={`app ${theme} auth-container`}>
+        <header>
+          <h1>Advanced To-Do List</h1>
+          <ThemeSelector theme={theme} setTheme={setTheme} />
+        </header>
+        
+        <main className="auth-main">
+          <AuthForm onLogin={handleLogin} onRegister={handleRegister} />
+        </main>
+      </div>
+    );
+  }
+
+  // Основной интерфейс приложения после входа
+   return (
     <div className={`app ${theme}`}>
       <header>
         <h1>Advanced To-Do List</h1>
@@ -267,19 +273,19 @@ const App: React.FC = () => {
             className={activeTab === 'tasks' ? 'active' : ''}
             onClick={() => setActiveTab('tasks')}
           >
-            Tasks
+            Задачи
           </button>
           <button 
             className={activeTab === 'collaboration' ? 'active' : ''}
             onClick={() => setActiveTab('collaboration')}
           >
-            Collaboration
+            Участники
           </button>
           <button 
             className={activeTab === 'profile' ? 'active' : ''}
             onClick={() => setActiveTab('profile')}
           >
-            Profile
+            Профиль
           </button>
         </nav>
         <ThemeSelector theme={theme} setTheme={setTheme} />
@@ -309,9 +315,9 @@ const App: React.FC = () => {
           <UserProfile 
             user={{
               username: currentUser.username,
-              fullName: currentUser.fullName || undefined,
-              email: currentUser.email || undefined,
-              phone: currentUser.phone || undefined
+              fullName: currentUser.fullName || '',
+              email: currentUser.email || '',
+              phone: currentUser.phone || ''
             }} 
             onUpdate={handleProfileUpdate}
             onLogout={handleLogout}
@@ -321,6 +327,5 @@ const App: React.FC = () => {
     </div>
   );
 };
-
 
 export default App;

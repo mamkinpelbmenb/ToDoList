@@ -32,11 +32,11 @@ const SubtaskForm: React.FC<SubtaskFormProps> = ({ addSubtask }) => {
         type="text"
         value={title}
         onChange={handleChange}
-        placeholder="Add subtask"
+        placeholder="Добавить подзадачу"
         aria-label="Subtask title"
         required
       />
-      <button type="submit">Add</button>
+      <button type="submit">Добавить</button>
       {error && <div className="error">{error}</div>}
     </form>
   );

@@ -29,12 +29,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
 
   return (
     <div className="user-profile">
-      <h2>Your Profile</h2>
+      <h2>Ваш профиль</h2>
       
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="profile-username">Username</label>
+            <label htmlFor="profile-username">Логин</label>
             <input 
               id="profile-username"
               type="text" 
@@ -45,7 +45,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
           </div>
           
           <div className="form-group">
-            <label htmlFor="profile-fullname">Full Name</label>
+            <label htmlFor="profile-fullname">ФИО</label>
             <input
               id="profile-fullname"
               type="text"
@@ -57,7 +57,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
           </div>
           
           <div className="form-group">
-            <label htmlFor="profile-email">Email</label>
+            <label htmlFor="profile-email">Почта</label>
             <input
               id="profile-email"
               type="email"
@@ -69,7 +69,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
           </div>
           
           <div className="form-group">
-            <label htmlFor="profile-phone">Phone</label>
+            <label htmlFor="profile-phone">Номер</label>
             <input
               id="profile-phone"
               type="tel"
@@ -88,7 +88,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
               className="save-btn"
               aria-label="Save profile changes"
             >
-              Save
+              Сохранить
             </button>
             <button 
               type="button" 
@@ -96,16 +96,16 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
               onClick={() => setIsEditing(false)}
               aria-label="Cancel editing"
             >
-              Cancel
+              Отмена
             </button>
           </div>
         </form>
       ) : (
         <div className="profile-info">
-          <p><strong>Username:</strong> {user.username}</p>
-          {fullName && <p><strong>Full Name:</strong> {fullName}</p>}
-          {email && <p><strong>Email:</strong> {email}</p>}
-          {phone && <p><strong>Phone:</strong> {phone}</p>}
+          <p><strong>Логин:</strong> {user.username}</p>
+          {fullName && <p><strong>ФИО:</strong> {fullName}</p>}
+          {email && <p><strong>Почта:</strong> {email}</p>}
+          {phone && <p><strong>Номер:</strong> {phone}</p>}
           
           <div className="profile-actions">
             <button 
@@ -113,14 +113,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate, onLogout }) =
               onClick={() => setIsEditing(true)}
               aria-label="Edit profile"
             >
-              Edit Profile
+              Редактировать профиль
             </button>
             <button 
               className="logout-btn"
               onClick={onLogout}
               aria-label="Logout"
             >
-              Logout
+              Выйти
             </button>
           </div>
         </div>
