@@ -2,37 +2,52 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import ThemeSelector from './components/ThemeSelector';
+import ThemeCustomizer from './components/ThemeCustomizer';
 import Collaboration from './components/Collaboration';
 import AuthForm from './components/AuthForm';
 import UserProfile from './components/UserProfile';
 import './styles/App.css';
-import { Task, Theme, Subtask, Comment, User } from './types/global';
+import { Task, Theme, Subtask, Comment, User, CustomTheme } from './types/global';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [theme, setTheme] = useState<Theme>('light');
-  const [activeTab, setActiveTab] = useState<'tasks' | 'collaboration' | 'profile'>('tasks');
+  const [activeTab, setActiveTab] = useState<'tasks' | 'collaboration' | 'profile' | 'customize'>('tasks');
   const [collaborators, setCollaborators] = useState<string[]>([]);
+  const [isAuthFormVisible, setIsAuthFormVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Загрузка данных из localStorage при запуске
   useLayoutEffect(() => {
+    // Загрузка сохраненных данных из localStorage
     const savedTheme = localStorage.getItem('theme') as Theme || 'light';
     const savedUser = JSON.parse(localStorage.getItem('currentUser') || 'null') as User | null;
     const savedCollaborators = JSON.parse(localStorage.getItem('collaborators') || '[]') as string[];
+    
+    // Загрузка кастомной темы
+    const customTheme = localStorage.getItem('customTheme');
+    if (customTheme) {
+      const themeData: CustomTheme = JSON.parse(customTheme);
+      const root = document.documentElement;
+      root.style.setProperty('--primary-color', themeData.primary);
+      root.style.setProperty('--secondary-color', themeData.secondary);
+      root.style.setProperty('--background-color', themeData.bg);
+      root.style.setProperty('--surface-color', themeData.surface);
+      root.style.setProperty('--text-color', themeData.text);
+    }
     
     setTheme(savedTheme);
     setCollaborators(savedCollaborators);
     
     if (savedUser) {
       setCurrentUser(savedUser);
+      setIsAuthFormVisible(false);
     }
     
     setIsLoading(false);
   }, []);
 
-  // Сохранение данных в localStorage при изменениях
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // Сохранение данных в localStorage
     localStorage.setItem('theme', theme);
     localStorage.setItem('collaborators', JSON.stringify(collaborators));
     
@@ -42,7 +57,6 @@ const App: React.FC = () => {
     }
   }, [theme, collaborators, currentUser]);
 
-  // Обработчик входа
   const handleLogin = (credentials: { username: string; password: string }) => {
     const users = JSON.parse(localStorage.getItem('users') || '[]') as User[];
     const user = users.find(
@@ -50,23 +64,22 @@ const App: React.FC = () => {
     );
     
     if (user) {
-      // Загрузка задач пользователя
       const savedTasks = JSON.parse(localStorage.getItem(`tasks_${user.id}`) || '[]') as Task[];
       const userWithTasks = { ...user, tasks: savedTasks };
       
       setCurrentUser(userWithTasks);
+      setIsAuthFormVisible(false);
     } else {
       alert('Invalid username or password');
     }
   };
 
-  // Обработчик регистрации
   const handleRegister = (userData: { 
     username: string; 
     password: string; 
     fullName?: string; 
     email?: string; 
-    phone?: string 
+    phone?: string
   }) => {
     const users = JSON.parse(localStorage.getItem('users') || '[]') as User[];
     
@@ -85,19 +98,19 @@ const App: React.FC = () => {
     localStorage.setItem('users', JSON.stringify(users));
     
     setCurrentUser(newUser);
+    setIsAuthFormVisible(false);
   };
 
-  // Обработчик выхода
   const handleLogout = () => {
     setCurrentUser(null);
+    setIsAuthFormVisible(true);
     localStorage.removeItem('currentUser');
   };
 
-  // Обновление профиля пользователя
   const handleProfileUpdate = (updates: { 
     fullName?: string; 
     email?: string; 
-    phone?: string 
+    phone?: string
   }) => {
     if (!currentUser) return;
     
@@ -108,7 +121,6 @@ const App: React.FC = () => {
     
     setCurrentUser(updatedUser);
     
-    // Обновление в общем списке пользователей
     const users = JSON.parse(localStorage.getItem('users') || '[]') as User[];
     const updatedUsers = users.map(u => 
       u.id === currentUser.id ? updatedUser : u
@@ -116,7 +128,6 @@ const App: React.FC = () => {
     localStorage.setItem('users', JSON.stringify(updatedUsers));
   };
 
-  // Добавление задачи
   const addTask = (task: Omit<Task, 'id' | 'completed' | 'subtasks' | 'comments'>) => {
     if (!currentUser) return;
     
@@ -136,7 +147,6 @@ const App: React.FC = () => {
     setCurrentUser(updatedUser);
   };
 
-  // Переключение статуса задачи
   const toggleTask = (taskId: string) => {
     if (!currentUser) return;
     
@@ -148,7 +158,6 @@ const App: React.FC = () => {
     });
   };
 
-  // Удаление задачи
   const deleteTask = (taskId: string) => {
     if (!currentUser) return;
     
@@ -158,7 +167,6 @@ const App: React.FC = () => {
     });
   };
 
-  // Добавление подзадачи
   const addSubtask = (taskId: string, subtask: Omit<Subtask, 'id' | 'completed'>) => {
     if (!currentUser) return;
     
@@ -178,7 +186,6 @@ const App: React.FC = () => {
     });
   };
 
-  // Переключение статуса подзадачи
   const toggleSubtask = (taskId: string, subtaskId: string) => {
     if (!currentUser) return;
     
@@ -199,7 +206,6 @@ const App: React.FC = () => {
     });
   };
 
-  // Добавление комментария
   const addComment = (taskId: string, comment: Omit<Comment, 'id' | 'date'>) => {
     if (!currentUser) return;
     
@@ -219,7 +225,12 @@ const App: React.FC = () => {
     });
   };
 
-  // Изменение порядка задач
+  const addCollaborator = (email: string) => {
+    if (!collaborators.includes(email)) {
+      setCollaborators(prev => [...prev, email]);
+    }
+  };
+
   const reorderTasks = (startIndex: number, endIndex: number) => {
     if (!currentUser) return;
     
@@ -237,58 +248,71 @@ const App: React.FC = () => {
     });
   };
 
-  // Добавление коллаборатора
-  const addCollaborator = (email: string) => {
-    if (!collaborators.includes(email)) {
-      setCollaborators(prev => [...prev, email]);
-    }
+  const saveCustomTheme = (themeData: CustomTheme) => {
+    localStorage.setItem('customTheme', JSON.stringify(themeData));
   };
 
-   if (isLoading) {
-    return <div className="loading-container">Загрузка...</div>;
+  if (isLoading) {
+    return <div className="loading-container">Loading...</div>;
   }
 
-  if (!currentUser) {
+  if (!currentUser || isAuthFormVisible) {
     return (
-      <div className={`app ${theme} auth-container`}>
-        <header>
-          <h1>Advanced To-Do List</h1>
-          <ThemeSelector theme={theme} setTheme={setTheme} />
-        </header>
-        
-        <main className="auth-main">
-          <AuthForm onLogin={handleLogin} onRegister={handleRegister} />
-        </main>
+      <div className={`app auth-container ${theme}`}>
+        <div className="auth-content-wrapper">
+          <header className="auth-header">
+            <h1>Advanced To-Do List</h1>
+          </header>
+          
+          <div className="auth-theme-selector">
+            <ThemeSelector theme={theme} setTheme={setTheme} />
+          </div>
+          
+          <main className="auth-main">
+            <AuthForm onLogin={handleLogin} onRegister={handleRegister} />
+          </main>
+        </div>
       </div>
     );
   }
 
-  // Основной интерфейс приложения после входа
-   return (
+  return (
     <div className={`app ${theme}`}>
       <header>
         <h1>Advanced To-Do List</h1>
         <nav>
           <button 
-            className={activeTab === 'tasks' ? 'active' : ''}
+            className={`nav-btn ${activeTab === 'tasks' ? 'active' : ''}`}
             onClick={() => setActiveTab('tasks')}
           >
-            Задачи
+            <i className="fas fa-tasks"></i>
+            <span>Tasks</span>
           </button>
+          
           <button 
-            className={activeTab === 'collaboration' ? 'active' : ''}
+            className={`nav-btn ${activeTab === 'collaboration' ? 'active' : ''}`}
             onClick={() => setActiveTab('collaboration')}
           >
-            Участники
+            <i className="fas fa-users"></i>
+            <span>Collaboration</span>
           </button>
+          
           <button 
-            className={activeTab === 'profile' ? 'active' : ''}
+            className={`nav-btn ${activeTab === 'profile' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile')}
           >
-            Профиль
+            <i className="fas fa-user"></i>
+            <span>Profile</span>
+          </button>
+          
+          <button 
+            className={`nav-btn ${activeTab === 'customize' ? 'active' : ''}`}
+            onClick={() => setActiveTab('customize')}
+          >
+            <i className="fas fa-palette"></i>
+            <span>Customize</span>
           </button>
         </nav>
-        <ThemeSelector theme={theme} setTheme={setTheme} />
       </header>
 
       <main>
@@ -311,13 +335,43 @@ const App: React.FC = () => {
             addCollaborator={addCollaborator} 
             tasks={currentUser.tasks}
           />
+        ) : activeTab === 'customize' ? (
+          <div className="customization-tab">
+            <ThemeCustomizer 
+              currentTheme={theme} 
+              onThemeChange={setTheme} 
+              onSaveCustomTheme={saveCustomTheme}
+            />
+            
+            <div className="theme-preview">
+              <div className="preview-card">
+                <h4>Task Card Preview</h4>
+                <div className="preview-content">
+                  <span className="preview-badge high">High Priority</span>
+                  <p>This is a sample task preview</p>
+                  <div className="preview-meta">
+                    <span><i className="far fa-calendar"></i> Tomorrow</span>
+                    <span><i className="far fa-check-square"></i> 2/5</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="preview-card">
+                <h4>Button Preview</h4>
+                <div className="preview-buttons">
+                  <button className="primary-btn">Primary Button</button>
+                  <button className="secondary-btn">Secondary Button</button>
+                </div>
+              </div>
+            </div>
+          </div>
         ) : (
           <UserProfile 
             user={{
               username: currentUser.username,
-              fullName: currentUser.fullName || '',
-              email: currentUser.email || '',
-              phone: currentUser.phone || ''
+              fullName: currentUser.fullName || undefined,
+              email: currentUser.email || undefined,
+              phone: currentUser.phone || undefined
             }} 
             onUpdate={handleProfileUpdate}
             onLogout={handleLogout}

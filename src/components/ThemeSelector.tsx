@@ -1,18 +1,6 @@
 import React from 'react';
 import { Theme } from '../types/global';
 
-// Стиль для скрытой метки (добавьте в CSS)
-// .visually-hidden {
-//   position: absolute;
-//   width: 1px;
-//   height: 1px;
-//   padding: 0;
-//   margin: -1px;
-//   overflow: hidden;
-//   clip: rect(0, 0, 0, 0);
-//   border: 0;
-// }
-
 interface ThemeSelectorProps {
   theme: Theme;
   setTheme: (theme: Theme) => void;
@@ -33,9 +21,8 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ theme, setTheme }) => {
 
   return (
     <div className="theme-selector">
-      {/* Скрытая метка для скринридеров */}
-      <label htmlFor="theme-select" className="visually-hidden">
-        Выберите тему
+      <label htmlFor="theme-select" className="theme-label">
+        Theme:
       </label>
       
       <select 
@@ -43,11 +30,33 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ theme, setTheme }) => {
         value={theme} 
         onChange={handleChange}
         aria-label="Select application theme"
+        title="Select color theme"
       >
         {themes.map(t => (
-          <option key={t.name} value={t.name}>{t.label}</option>
+          <option 
+            key={t.name} 
+            value={t.name}
+            aria-label={`${t.label} theme`}
+          >
+            {t.label}
+          </option>
         ))}
       </select>
+      
+      <div className="theme-preview" aria-hidden="true">
+        {themes.map(t => (
+          <div 
+            key={t.name}
+            className={`theme-option ${theme === t.name ? 'active' : ''}`}
+            onClick={() => setTheme(t.name as Theme)}
+            title={`Select ${t.label} theme`}
+            aria-hidden="true"
+          >
+            <div className={`theme-dot ${t.name}`} />
+            <span className="theme-name">{t.label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

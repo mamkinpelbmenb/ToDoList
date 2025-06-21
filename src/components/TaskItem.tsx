@@ -134,6 +134,40 @@ const TaskItem: React.FC<TaskItemProps> = ({
           ))}
         </div>
       )}
+
+      <div className="task-meta">
+        {task.priority === 'high' && (
+          <span className="priority-badge high">
+            <i className="fas fa-exclamation-circle"></i> High Priority
+          </span>
+        )}
+        
+        {task.dueDate && (
+          <span className="due-date">
+            <i className="far fa-calendar"></i> 
+            {new Date(task.dueDate).toLocaleDateString()}
+          </span>
+        )}
+        
+        {task.reminder && (
+          <span className="reminder">
+            <i className="far fa-bell"></i> Reminder
+          </span>
+        )}
+        
+        {task.subtasks.length > 0 && (
+          <span className="subtasks-info">
+            <i className="far fa-check-square"></i>
+            {task.subtasks.filter(st => st.completed).length}/{task.subtasks.length}
+          </span>
+        )}
+        
+        {task.comments.length > 0 && (
+          <span className="comments-info">
+            <i className="far fa-comment"></i> {task.comments.length}
+          </span>
+        )}
+      </div>
     </li>
   );
 };

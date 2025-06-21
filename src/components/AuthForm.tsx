@@ -63,72 +63,109 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin, onRegister }) => {
 
   return (
     <div className="auth-form">
-      <h2>{isLogin ? 'Вход' : 'Регистрация'}</h2> {/* Более короткий текст */}
-      <form onSubmit={handleSubmit}>
+      <div className="auth-header">
+        <h2>{isLogin ? 'Вход' : 'Регистрация'}</h2>
+        <div className="auth-icon">
+          <i className={`fas ${isLogin ? 'fa-sign-in-alt' : 'fa-user-plus'}`}></i>
+        </div>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="auth-form-content">
         <div className="form-group">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Логин*"
-            required
-          />
+          <div className="input-with-icon">
+            <i className="fas fa-user"></i>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Логин*"
+              required
+              className={errors.username ? 'error-input' : ''}
+            />
+          </div>
+          {errors.username && <div className="error-message">{errors.username}</div>}
         </div>
         
         <div className="form-group">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Пароль*"
-            required
-          />
+          <div className="input-with-icon">
+            <i className="fas fa-lock"></i>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Пароль*"
+              required
+              className={errors.password ? 'error-input' : ''}
+            />
+          </div>
+          {errors.password && <div className="error-message">{errors.password}</div>}
         </div>
         
         {!isLogin && (
           <>
             <div className="form-group">
-              <input
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="ФИО"
-              />
+              <div className="input-with-icon">
+                <i className="fas fa-id-card"></i>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="ФИО"
+                />
+              </div>
             </div>
             
             <div className="form-group">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Почта"
-              />
+              <div className="input-with-icon">
+                <i className="fas fa-envelope"></i>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Почта"
+                  className={errors.email ? 'error-input' : ''}
+                />
+              </div>
+              {errors.email && <div className="error-message">{errors.email}</div>}
             </div>
             
             <div className="form-group">
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Номер"
-              />
+              <div className="input-with-icon">
+                <i className="fas fa-phone"></i>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Номер телефона"
+                  className={errors.phone ? 'error-input' : ''}
+                />
+              </div>
+              {errors.phone && <div className="error-message">{errors.phone}</div>}
             </div>
           </>
         )}
         
-        <button type="submit" className="auth-btn">
-          {isLogin ? 'Войти' : 'Зарегистрироваться'} {/* Более короткий текст */}
-        </button>
-        
-        <button 
-          type="button" 
-          className="toggle-btn"
-          onClick={() => setIsLogin(!isLogin)}
-        >
-          {isLogin 
-            ? 'Нет аккаунта? Регистрация' 
-            : 'Уже есть аккаунт? Войти'} {/* Более короткий текст */}
-        </button>
+        <div className="form-actions">
+          <button type="submit" className="auth-btn primary-btn">
+            <span className="button-content">
+              <i className={`fas ${isLogin ? 'fa-sign-in-alt' : 'fa-user-plus'}`}></i>
+              <span className="button-text">{isLogin ? 'Войти' : 'Зарегистрироваться'}</span>
+            </span>
+          </button>
+          
+          <button 
+            type="button" 
+            className="toggle-btn secondary-btn"
+            onClick={() => setIsLogin(!isLogin)}
+          >
+            <span className="button-content">
+              <i className={`fas ${isLogin ? 'fa-user-plus' : 'fa-sign-in-alt'}`}></i>
+              <span className="button-text">
+                {isLogin ? 'Нет аккаунта? Регистрация' : 'Уже есть аккаунт? Войти'}
+              </span>
+            </span>
+          </button>
+        </div>
       </form>
     </div>
   );
